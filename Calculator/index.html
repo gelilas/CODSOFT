@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color:#fff;
+        }
+
+        #calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: pink;
+            border-radius: 5px;
+        }
+
+        #result {
+            grid-column: span 4;
+            padding: 10px;
+            font-size: 24px;
+            text-align: right;
+            border: 1px solid #fff;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="calculator">
+        <div id="result"></div>
+        <button id="7">7</button>
+        <button id="8">8</button>
+        <button id="9">9</button>
+        <button id="clear">C</button>
+        <button id="4">4</button>
+        <button id="5">5</button>
+        <button id="6">6</button>
+        <button id="add">+</button>
+        <button id="1">1</button>
+        <button id="2">2</button>
+        <button id="3">3</button>
+        <button id="subtract">-</button>
+        <button id="divide">/</button>
+        <button id="0">0</button>
+        <button id="multiply">*</button>
+        <button id="equals">=</button>
+        
+    </div>
+
+    <script>
+        const result = document.getElementById('result');
+        const buttons = document.querySelectorAll('button');
+
+        let currentInput = '';
+        let currentOperator = '';
+        let currentTotal = null;
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => handleButtonClick(button.textContent));
+        });
+
+        function handleButtonClick(value) {
+            if (!isNaN(value) || value === '.') {
+                currentInput += value;
+                updateResult(currentInput);
+            } else if (value === 'C') {
+                clear();
+            } else if (value === '+' || value === '-' || value === '*' || value === '/') {
+                if (currentInput !== '') {
+                    if (currentTotal === null) {
+                        currentTotal = parseFloat(currentInput);
+                    } else {
+                        currentTotal = operate(currentTotal, currentInput, currentOperator);
+                    }
+                    currentInput = '';
+                }
+                currentOperator = value;
+            } else if (value === '=') {
+                if (currentInput !== '') {
+                    currentTotal = operate(currentTotal, currentInput, currentOperator);
+                    updateResult(currentTotal);
+                    currentInput = '';
+                    currentOperator = '';
+                }
+            }
+        }
+
+        function operate(a, b, operator) {
+            b = parseFloat(b);
+            switch (operator) {
+                case '+':
+                    return a + b;
+                case '-':
+                    return a - b;
+                case '*':
+                    return a * b;
+                case '/':
+                    return a / b;
+            }
+        }
+
+        function clear() {
+            currentInput = '';
+            currentOperator = '';
+            currentTotal = null;
+            updateResult('');
+        }
+
+        function updateResult(value) {
+            result.textContent = value;
+        }
+    </script>
+</body>
+</html>
